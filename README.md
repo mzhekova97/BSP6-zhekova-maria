@@ -9,10 +9,11 @@ Uppaal modelling: Yan KIM
        	It can be found the scientific and technological aspect explained there along with
      	all the necessary explanations for the requirements, design, production, assessment,
 	and conclusion of the bachelor semester project.
+	
+- bsp06-zhekova-maria-scientific-and-technical-report.txt - the latex representation of "bsp06-zhekova-maria-scientific-and-technical-report.pdf" 
 
 | model |\
             - contact_tracing.xml 			- the system of the model for the model checker
             - contact_tracing 			- the two queries used for verification and analysis of the implemented model
             
-| raportsTXT |\
-            - bsp06-zhekova-maria-scientific-and-technical-report.txt - the latex representation of "bsp06-zhekova-maria-scientific-and-technical-report.pdf" 
+            
