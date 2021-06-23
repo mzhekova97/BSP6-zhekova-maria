@@ -1,6 +1,7 @@
 THIS FILE LISTS AND PRESENTS THE DELIVERABLES OF THE SIXTH SEMESTER PROJECT OF THE COMPUTER SCIENCE STUDENT MARIA ZHEKOVA (no videos included).
 TITLE OF THE PROJECT : Security analysis of Corona Tracing Applications
 PAT: Marjan SKROBOT
+Uppaal modelling: Yan KIM
 
 | model |\
             - contact_tracing.xml 			- the system of the model for the model checker
