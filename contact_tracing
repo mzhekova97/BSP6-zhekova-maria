@@ -1,0 +1,12 @@
+//This file was generated from (Academic) UPPAAL 4.1.24 (rev. 29A3ECA4E5FB0808), November 2019
+
+/*
+Stronger version.
+Also uses location variable
+*/
+A[] forall(i:id)forall(j:int[0,Max_eph-1])!(User(i).s4 || User(i).s5) imply (User(i).r_token[j] imply(exists(k:int[0,numEph-1])(User(j/numEph+1).r_token[(i-1)*numEph+k]&&  User(i).r_loc[j] == User(j/numEph+1).r_loc[(i-1)*numEph+k])))
+
+/*
+Weak variant - communication in two ways (If I sent -> I receive)
+*/
+A[] forall(i:id)forall(j:int[0,Max_eph-1])!(User(i).s4 || User(i).s5) imply (User(i).r_token[j] imply exists(k:int[0,numEph-1])User(j/numEph+1).r_token[(i-1)*numEph+k])

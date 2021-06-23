@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+// possibilities of user's id
+const int Max_id = 2;
+typedef int[1,Max_id] id;
+
+// location
+const int Max_loc = 2;
+typedef int[1,Max_loc] loc;
+
+// ephIDs
+const int numEph = 3;
+typedef int[0,numEph] posEph;
+const int Max_eph = Max_id*numEph;
+typedef int[1,Max_eph+1] eph_id;
+int[0,Max_eph] sh_t;
+
+// struct of EphIds
+const int max_comb = Max_id*numEph;
+typedef struct {id myID; eph_id myEph;} comb;
+const comb combin[max_comb]= {
+{1,1},
+{1,2},
+{1,3},
+{2,4},
+{2,5},
+{2,6}
+};
+/*{1,7},
+{1,8},
+{1,9},
+{1,10},
+{2,6},
+{2,7},
+{2,8},
+{2,9},
+{2,10}
+}
+bool sh_vec[max_comb];
+
+// days passing - server will increase for now
+const int Max_eph_day = 1;
+const int Max_d = numEph/Max_eph_day;
+typedef int[0,Max_d] d;
+
+// 
+const int Max_stats = 10;
+typedef struct {eph_id shID;d myDay; loc myLoc;} stat;
+
+typedef int[0,2] covid;
+
+// the channel for the tuple of the state with location, later with ephID
+broadcast chan snd_l[2][loc];
+broadcast chan new_day;
+
+d today;
+
+
+
+
+
+
+
+</declaration>
+	<template>
+		<name x="5" y="5">User</name>
+		<parameter>id my_id</parameter>
+		<declaration>// Place local declarations here.
+
+// inits
+loc myloc;
+covid q;
+
+bool transmit[Max_eph_day];
+
+int[0,Max_eph_day] can_up;
+
+// received status
+
+bool r_token[max_comb];
+int r_day[max_comb];
+int r_loc[max_comb];
+// takes the Eph_id corresponding to the user and saves them in a struct
+
+int[-1,Max_eph] eph_pos = -1;
+
+void setEphs(){
+    eph_pos = (my_id-1)*numEph-1;  
+}
+
+void updateEph(){
+     eph_pos += 1;
+     can_up-=1;
+}
+
+bool didTransmit(){
+    int i;
+    for(i=0;i&lt;Max_eph_day;i++){
+        if(transmit[i]){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// updates the received status
+void update_my(){
+    sh_vec[eph_pos]=1;
+}
+
+//list of received tokens - to send to the server
+void update_r(){
+    r_token[sh_t]=1;
+    r_day[sh_t]= today;
+    r_loc[sh_t]=myloc;
+
+}
+
+void updateAll(){
+    int i;
+    for(i=0;i&lt;max_comb;i++){
+        if(sh_vec[i]){
+            r_token[i]= 1;
+            r_day[i]=today;
+            r_loc[i]=myloc;
+        }
+    }
+    transmit[Max_eph_day-can_up-1]=1;
+}
+
+void flush_sh_vec(){
+    int i;
+    for(i=0;i&lt;max_comb;i++){
+        sh_vec[i]=0;
+    }
+}
+
+</declaration>
+		<location id="id0" x="-29639" y="-27871">
+			<name x="-29648" y="-27854">s1</name>
+		</location>
+		<location id="id1" x="-29138" y="-28109">
+			<name x="-29172" y="-28143">s3</name>
+		</location>
+		<location id="id2" x="-29036" y="-28177">
+			<name x="-29019" y="-28194">s6</name>
+			<urgent/>
+		</location>
+		<location id="id3" x="-29953" y="-27871">
+			<name x="-29962" y="-27854">s0</name>
+		</location>
+		<location id="id4" x="-29639" y="-28109">
+			<name x="-29649" y="-28143">s2</name>
+			<committed/>
+		</location>
+		<location id="id5" x="-29223" y="-28186">
+			<name x="-29257" y="-28203">s4</name>
+			<committed/>
+		</location>
+		<location id="id6" x="-29036" y="-28033">
+			<name x="-29010" y="-28033">s5</name>
+			<committed/>
+		</location>
+		<init ref="id3"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-29427" y="-27897">didTransmit()</label>
+			<nail x="-29138" y="-27871"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-29291" y="-28041">can_up&gt;0</label>
+			<label kind="assignment" x="-29291" y="-28024">updateEph()</label>
+			<nail x="-29231" y="-28067"/>
+			<nail x="-29197" y="-28033"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-29061" y="-28084">snd_l[1][myloc]?</label>
+			<nail x="-29070" y="-28084"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-29129" y="-28007">snd_l[0][myloc]?</label>
+			<label kind="assignment" x="-29112" y="-27990">update_r(),
+update_my()</label>
+			<nail x="-29104" y="-28041"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-29333" y="-28169">snd_l[1][myloc]!</label>
+			<label kind="assignment" x="-29308" y="-28152">updateAll()</label>
+			<nail x="-29214" y="-28135"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-29265" y="-28262">!transmit[Max_eph_day-can_up-1]</label>
+			<label kind="synchronisation" x="-29214" y="-28237">snd_l[0][myloc]!</label>
+			<label kind="assignment" x="-29206" y="-28220">sh_t = eph_pos,
+flush_sh_vec()</label>
+			<nail x="-29163" y="-28169"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="select" x="-29571" y="-28169">q_u:covid</label>
+			<label kind="assignment" x="-29563" y="-28152">q = q_u,
+updateEph()</label>
+			<nail x="-29622" y="-28109"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-29834" y="-27897">setEphs()</label>
+			<nail x="-29800" y="-27871"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-29053" y="-28135">q=0</label>
+			<nail x="-29061" y="-28126"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-29112" y="-28160">q&gt;0</label>
+			<nail x="-29112" y="-28169"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<label kind="select" x="-29758" y="-28084">l_u : loc</label>
+			<label kind="guard" x="-29784" y="-28058">today &lt;Max_d</label>
+			<label kind="synchronisation" x="-29767" y="-28041">new_day?</label>
+			<label kind="assignment" x="-29809" y="-28024">myloc = l_u,
+can_up = Max_eph_day</label>
+		</transition>
+	</template>
+	<template>
+		<name>Server</name>
+		<declaration>// d := d+1 in Update
+
+</declaration>
+		<location id="id7" x="-2677" y="-2601">
+		</location>
+		<init ref="id7"/>
+	</template>
+	<template>
+		<name>Adversary1</name>
+		<declaration>bool has_state[Max_eph];</declaration>
+		<location id="id8" x="-1020" y="-76">
+			<name x="-1030" y="-110">s0</name>
+			<label kind="comments" x="-1096" y="-272">Captures everywhere.
+Transmits everywhere.</label>
+		</location>
+		<location id="id9" x="-1020" y="-187">
+			<name x="-1028" y="-221">s2</name>
+			<committed/>
+		</location>
+		<location id="id10" x="-1020" y="25">
+			<name x="-1028" y="42">s1</name>
+			<committed/>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id8"/>
+			<label kind="select" x="-943" y="-51">l_u :loc</label>
+			<label kind="synchronisation" x="-952" y="-25">snd_l[1][l_u]!</label>
+			<nail x="-986" y="-17"/>
+			<nail x="-986" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="select" x="-1130" y="-170">l_u:loc</label>
+			<label kind="synchronisation" x="-1164" y="-153">snd_l[1][l_u]?</label>
+			<nail x="-1054" y="-153"/>
+			<nail x="-1054" y="-119"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id10"/>
+			<label kind="select" x="-1258" y="-59">l_u: loc,
+eph_taken: int[0,Max_eph-1]</label>
+			<label kind="guard" x="-1215" y="-25">has_state[eph_taken]</label>
+			<label kind="synchronisation" x="-1164" y="0">snd_l[0][l_u]!</label>
+			<label kind="assignment" x="-1173" y="17">sh_t=eph_taken</label>
+			<nail x="-1054" y="-51"/>
+			<nail x="-1054" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="select" x="-952" y="-170">l_u: loc</label>
+			<label kind="synchronisation" x="-969" y="-153">snd_l[0][l_u]?</label>
+			<label kind="assignment" x="-977" y="-136">has_state[sh_t] =1</label>
+			<nail x="-986" y="-119"/>
+			<nail x="-986" y="-153"/>
+		</transition>
+	</template>
+	<template>
+		<name>Adversary2</name>
+		<declaration>bool has_state[Max_eph];
+loc myloc;</declaration>
+		<location id="id11" x="-17" y="-34">
+			<name x="-25" y="-68">s3</name>
+			<committed/>
+		</location>
+		<location id="id12" x="-17" y="-102">
+			<name x="-27" y="-136">s2</name>
+		</location>
+		<location id="id13" x="-17" y="-170">
+			<name x="-27" y="-204">s4</name>
+			<committed/>
+		</location>
+		<location id="id14" x="-578" y="-102">
+			<name x="-588" y="-136">s0</name>
+			<label kind="comments" x="-654" y="-195">Transmits everything captured in the same location.</label>
+		</location>
+		<location id="id15" x="-476" y="-102">
+			<name x="-486" y="-136">s1</name>
+		</location>
+		<init ref="id14"/>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id15"/>
+			<nail x="178" y="-102"/>
+			<nail x="178" y="34"/>
+			<nail x="-476" y="34"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id12"/>
+			<label kind="select" x="-391" y="-144">l_u:loc</label>
+			<label kind="assignment" x="-408" y="-127">myloc = l_u</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="34" y="-68">snd_l[1][myloc]!</label>
+			<nail x="17" y="-51"/>
+			<nail x="17" y="-85"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-178" y="-153">snd_l[1][myloc]?</label>
+			<nail x="-51" y="-153"/>
+			<nail x="-51" y="-119"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="select" x="-255" y="-85">eph_taken: int[0,Max_eph-1]</label>
+			<label kind="guard" x="-204" y="-68">has_state[eph_taken]</label>
+			<label kind="synchronisation" x="-178" y="-51">snd_l[0][myloc]!</label>
+			<label kind="assignment" x="-187" y="-34">sh_t=eph_taken</label>
+			<nail x="-51" y="-85"/>
+			<nail x="-51" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="43" y="-136">snd_l[0][myloc]?</label>
+			<label kind="assignment" x="26" y="-153">has_state[sh_t] =1</label>
+			<nail x="17" y="-119"/>
+			<nail x="17" y="-153"/>
+		</transition>
+	</template>
+	<template>
+		<name>Day</name>
+		<declaration>
+</declaration>
+		<location id="id16" x="-782" y="-161">
+			<name x="-790" y="-144">s0</name>
+		</location>
+		<init ref="id16"/>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id16"/>
+			<label kind="guard" x="-824" y="-280">today&lt;Max_d</label>
+			<label kind="synchronisation" x="-807" y="-263">new_day!</label>
+			<label kind="assignment" x="-807" y="-246">today++</label>
+			<nail x="-807" y="-221"/>
+			<nail x="-748" y="-221"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+// List one or more processes to be composed into a system.
+system User, Day;//, Adversary2;// Server; //, Authority;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] forall(i:id)forall(j:int[0,Max_eph-1])!(User(i).s4 || User(i).s5) imply (User(i).r_token[j] imply(exists(k:int[0,numEph-1])(User(j/numEph+1).r_token[(i-1)*numEph+k]&amp;&amp;  User(i).r_loc[j] == User(j/numEph+1).r_loc[(i-1)*numEph+k])))</formula>
+			<comment>Stronger version.
+Also uses location variable</comment>
+		</query>
+		<query>
+			<formula>A[] forall(i:id)forall(j:int[0,Max_eph-1])!(User(i).s4 || User(i).s5) imply (User(i).r_token[j] imply exists(k:int[0,numEph-1])User(j/numEph+1).r_token[(i-1)*numEph+k])</formula>
+			<comment>Weak variant - communication in two ways (If I sent -&gt; I receive)</comment>
+		</query>
+	</queries>
+</nta>
