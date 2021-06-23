@@ -2,11 +2,11 @@ THIS FILE LISTS AND PRESENTS THE DELIVERABLES OF THE SIXTH SEMESTER PROJECT OF T
 TITLE OF THE PROJECT : Security analysis of Corona Tracing Applications
 PAT: Marjan SKROBOT
 
-| model |
+| model |\\
             - contact_tracing.xml 			- the system of the model for the model checker
             - contact_tracing 			- the two queries used for verification and analysis of the implemented model
             
-| raports |
+| raports |\\
             - bsp06-zhekova-maria-scientific-and-technical-report.txt - a scientific and technical report written in English.
 		        This file introduces the project, explains its domain, objectives and  constraints.
             It can be found the scientific and technological aspect explained there along with
