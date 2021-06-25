@@ -13,7 +13,9 @@ Uppaal modelling: Yan KIM
 - bsp06-zhekova-maria-scientific-and-technical-report.txt - the latex representation of "bsp06-zhekova-maria-scientific-and-technical-report.pdf" 
 
 | model |\
-            - contact_tracing.xml 			- the system of the model for the model checker
-            - contact_tracing 			- the two queries used for verification and analysis of the implemented model
-            
+	- contact_tracing.xml 		- the system of the model for the model checker
+	- contact_tracing 		- the two queries used for verification and analysis of the implemented model
+	    
+| genEphID |\   
+	- generation.py			- for the generation of the tuple {id,EphID}
             
