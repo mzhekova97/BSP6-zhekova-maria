@@ -12,6 +12,14 @@ Uppaal modelling: Yan KIM
 	
 - bsp06-zhekova-maria-scientific-and-technical-report.txt - the latex representation of "bsp06-zhekova-maria-scientific-and-technical-report.pdf" 
 
+- bsp06-zhekova-maria-primary-language-summary.pdf - a summary of the entire report written in English.
+
+- bsp06-zhekova-maria-primary-language-summary.txt - the latex representation of "bsp06-zhekova-maria-primary-language-summary.pdf" 
+
+- bsp06-zhekova-maria-secondary-language-summary.pdf - a summary of the entire report written in French.
+
+- bsp06-zhekova-maria-secondary-language-summary.txt - the latex representation of "bsp06-zhekova-maria-secondary-language-summary.pdf" 
+
 | model |
 
 	- contact_tracing.xml 		- the system of the model for the model checker
