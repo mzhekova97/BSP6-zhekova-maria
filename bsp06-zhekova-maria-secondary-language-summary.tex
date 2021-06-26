@@ -1,0 +1,124 @@
+ \documentclass[a4paper, twocolumn]{article}
+%\documentclass[a4paper]{article}
+\makeatletter
+\def\@seccntformat#1{%
+  \expandafter\ifx\csname c@#1\endcsname\c@section
+  \thesection $\mid$
+  \else
+  \csname the#1\endcsname\quad
+  \fi}
+\makeatother
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows,automata}
+\usepackage{abstract}
+\usepackage{fullpage}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{pgf, tikz}
+\usepackage{pgfplots}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage[all]{xy}
+\usetikzlibrary{fit,arrows.meta}
+\usetikzlibrary{automata, positioning}
+
+
+% FOR THE CODE IN SECTION 5 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\usepackage{titlesec}
+
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\lstset{style=mystyle}
+
+\title{\textbf{Analyse de sécurité des applications de traçage pour COVID-19}}
+\date{\textbf{-- BSP6 --}\\Résumé\\ \today}
+\author{
+    Maria ZHEKOVA\\
+    \small University of Luxembourg\\
+    \small\texttt{maria.zhekova.001@student.uni.lu}
+	\and
+    Marjan SKROBOT\\
+    \small University of Luxembourg\\
+	\small\texttt{marjan.skrobot@uni.lu}
+}
+
+\begin{document}
+\maketitle
+
+% ---------- 1| INTRODUCTION ---------- 
+\section{Introduction}
+ De nos jours, la pandémie de COVID-19 est devenue l'un des sujets de discussion les plus courants. Pour aider à lever en toute sécurité les restrictions de santé publique actuelles, de nouvelles technologies appelées applications de traçage pour le corona virus sont en cours de développement. Avec le développement de ces applications et la façon dont les utilisateurs sont suivis, des risques de sécurité et de confidentialité apparaissent. D'où la raison de notre projet.
+% ---------- 2| Description du projet ---------- 
+\section{Description du projet}
+Dans cet article, nous présentons le résumé du projet de semestriel qui avait pour objectifs d'étudier différentes architectures d'application de traçage pour le corona virus et de concevoir un modèle qui peut être utilisé dans un vérificateur de modèles pour une analyse et une vérification plus approfondies.\\ 
+Nous utiliserons un vérificateur de modèles appelé Uppaal \cite{uppaal}. 
+
+% ---------- 3| Résultats --------- 
+\section{Résultats} 
+Dans cette section, nous allons brièvement présenter les résultats du projet.\\
+Un système de traçage consiste principalement des utilisateurs, autorité sanitaire et un serveur.\\
+Nous n'avons pas conçu le serveur, ni l'autorité. Par conséquent, notre système consiste uniquement à ce que les utilisateurs échangent des identifiants éphémères \texttt{EphID} en tant que messages de rencontre. Le système a été vérifié à l'aide de deux requêtes.
+\subsection{Utilisateur}
+Au début l'utilisateur choisit un lieu et un statut COVID-19 qui peut être positif, négatif ou éventuellement positif. L'ensemble des \texttt{EphID} est prédéfini et l'utilisateur doit choisir en début de journée son \texttt{EphID} en vérifiant du nombre maximal possible de \texttt{EphID}s par jour. Si possible, l'utilisateur peut changer son \texttt{EphID} ou passer au jour suivant en répétant le processus depuis le début.
+
+\subsection{Adversaire}
+Dans notre système, nous avons conçu deux adversaires.\\
+Un des adversaires peut capturer les rencontres diffusées de partout et les transmettre à tous les emplacements possibles, sans tenir compte de l'emplacement de l'adversaire.\\
+L'autre adversaire ne peut capturer les rencontres qu'à partir du même emplacement que l'adversaire lui-même, mais lorsqu'il change d'emplacement, l'adversaire peut diffuser les rencontres déjà capturées d'un autre emplacement vers le nouveau.
+
+\subsection{Requête}
+Afin de vérifier le système conçu, nous avons utilisé deux requêtes pour deux vérifications similaires.\\
+Le premier vérifie si chaque fois qu'un utilisateur reçoit un \texttt{EphID}, il est reçu d'un autre utilisateur et non de lui-même et s'il s'agit d'une communication bidirectionnelle.\\
+La deuxième requête est similaire à celle auparavant, mais elle recherche également aussi l'emplacement. Ainsi, il vérifie à nouveau la même propriété que ci-dessus mais aussi si l'\texttt{EphID} reçu provient d'un utilisateur au même endroit.\\
+
+\noindent Le modèle de vérification avec plus de détails en anglais peut être trouvé sur notre dépôt GitHub \cite{github}
+% ---------- 4| Conclusion---------- 
+\section{Conclusion}
+Les objectifs ont été remplis et nous avons pu livrer un système contenant un modèle des utilisateurs et de deux adversaires.\\
+En suivant la méthode de vérification du système, nous avons pu vérifier avec succès notre système pour les propriétés données à l'aide des deux requêtes implémentés.\\
+Par conséquent, nous pouvons conclure le projet comme un succès.
+
+\begin{thebibliography}{9}
+\bibitem{uppaal}
+Department of Information Technology at Uppsala University, Sweden \& the Department of Computer Science at Aalborg University in Denmark, "About Uppaal", [En-ligne]. Disponible: \url{https://uppaal.org} [Accédé le 20 juin 2021]
+
+\bibitem{github}
+M.Zhekova, M.Skrobot, Y.Kim, "Security analysis of Corona Tracing Applications", [En-ligne]. Disponible:  \url{https://github.com/mzhekova97/BSP6-zhekova-maria} [Accédé le 26 juin 2021]
+
+\end{thebibliography}
+
+\end{document}
